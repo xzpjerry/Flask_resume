@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title_block %}
+    <title>Sign in Page</title>
+{% endblock %}
+
+{% block body_block %}
+  <h1>Sign in</h1>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+   {% endwith %}
+  <form action="{{ url_for("login") }}" method="post" name="login">
+      {{ form.csrf_token }}
+      <p>
+          {{ form.username.label }}<br>
+          {{ form.username(size=80) }}<br>
+      </p>
+      <p>
+          {{ form.password.label }}<br>
+          {{ form.password(size=80) }}<br>
+      </p>
+      <p>{{ form.remember_me }} Remember Me</p>
+      <p><input type="submit" value="Sign In"></p>
+  </form>
+{% endblock %}
