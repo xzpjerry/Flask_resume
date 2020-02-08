@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title_block %}
+<title>Resume Page</title>
+{% endblock %}
+
+
+{% block body_block %}
+    <h1>Resume for {{ current_user.username }}</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% if basic_info_form %}
+        <form action="{{ url_for('edit_resume', resume_type = 'basic_info') }}" method="post" name="edit_basic_resume_info" enctype="multipart/form-data">
+            {{ basic_info_form.csrf_token }}
+            <p>
+                {{ basic_info_form.portrait.label }}<br>
+                {{ basic_info_form.portrait() }}<br>
+            </p>
+            <p>
+                {{ basic_info_form.name.label }}<br>
+                {{ basic_info_form.name(size=80) }}<br>
+            </p>
+            <p>
+                {{ basic_info_form.nation.label }}<br>
+                {{ basic_info_form.nation() }}<br>
+            </p>
+            <p>
+                {{ basic_info_form.region.label }}<br>
+                {{ basic_info_form.region(size=80) }}<br>
+            </p>
+            <p>
+                {{ basic_info_form.birth.label }}<br>
+                {{ basic_info_form.birth(size=80) }}<br>
+            </p>
+            <p><input type="submit" value="Save"></p>
+        </form>
+    {% else %}
+        <h2>Basic Info</h2>
+        <img src="{{ current_user.resume.basic_info.portrait_URL }}">
+        <p>Name: {{ current_user.resume.basic_info.name }}</p>
+        <p>Nation: {{ current_user.resume.basic_info.nation }}</p>
+        <p>Region: {{ current_user.resume.basic_info.region }}</p>
+        <p>Birth: {{ current_user.resume.basic_info.birth }}</p>
+    {% endif %}
+
+{% endblock %}

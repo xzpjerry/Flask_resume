@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title_block %}
+    <title>Sign up Page</title>
+{% endblock %}
+
+{% block body_block %}
+  <h1>Sign up</h1>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+   {% endwith %}
+  <form action="{{ url_for("signup") }}" method="post" name="signup">
+      {{ form.csrf_token }}
+      <p>
+          {{ form.username.label }}<br>
+          {{ form.username(size=80) }}<br>
+      </p>
+      <p>
+          {{ form.password.label }}<br>
+          {{ form.password(size=80) }}<br>
+      </p>
+      <p>{{ form.submit }}</p>
+  </form>
+{% endblock %}
