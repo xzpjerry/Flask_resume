@@ -26,7 +26,7 @@ def login():
             return redirect(request.args.get('next') or url_for('recipes.index'))
         else:
             flash("Incorrect username/password")
-            return render_template('login.html', form=form)
+            return render_template('users/login.html', form=form)
     return render_template('users/login.html', form=form)
 
 @users_blueprint.route('/signup', methods=('GET', 'POST'))
