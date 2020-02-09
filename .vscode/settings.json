@@ -1,0 +1,6 @@
+{
+    "python.venvFolders": [
+        "./"
+    ],
+    "python.pythonPath": "/Users/zhipengx/Desktop/flask_resume/venv/bin/python3"
+}

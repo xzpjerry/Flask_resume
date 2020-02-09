@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_login import UserMixin
 
-from gbconfig import db
+from flask_resume import db
 
 class Resume(db.Model):
     '''

@@ -1,45 +1,66 @@
-import os
-
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
+from flask_uploads import configure_uploads, patch_request_class
+from flask_login import LoginManager
 
+import os
+from flask_sqlalchemy import SQLAlchemy
+from flask_uploads import UploadSet, IMAGES
 
-def create_app():
-    """Create and configure an instance of the Flask application."""
+#######################
+#### Configuration ####
+#######################
+
+csrf = CSRFProtect()
+db = SQLAlchemy()
+login_manager = LoginManager()
+AVATARS = UploadSet('avatars', IMAGES, default_dest=lambda x: 'avatars')
+
+######################################
+#### Application Factory Function ####
+######################################
+
+def create_app(config_filename=None):
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        # a default secret that should be overridden by instance config
-        SECRET_KEY="dev",
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "testing.sqlite"),
-    )
+    app.config.from_pyfile(config_filename)
+    initialize_extensions(app)
+    register_blueprints(app)
+    return app
 
-    app.config.update(test_config)
+##########################
+#### Helper Functions ####
+##########################
 
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
+def initialize_extensions(app):
+    # Since the application instance is now created, pass it to each Flask
+    # extension instance to bind it to the Flask application instance (app)
 
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
-
-    # register the database commands
-    from flaskr import db
+    csrf.init_app(app)
 
     db.init_app(app)
+    
+    login_manager.session_protection = 'strong'
+    login_manager.login_view = 'users.login'
+    login_manager.init_app(app=app)
+    # Flask-Login configuration
+    from flask_resume.models import User
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
-    # apply the blueprints to the app
-    from flaskr import auth, blog
+    # Configurate avatar photos storage location
+    configure_uploads(app, AVATARS)
+    patch_request_class(app)  # set maximum file size, default is 16MB)
+    app.app_context().push()
 
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(blog.bp)
+    if app.config.get('TESTING', False):
+        db.create_all()
 
-    # make url_for('index') == url_for('blog.index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the blog blueprint a url_prefix, but for
-    # the tutorial the blog will be the main index
-    app.add_url_rule("/", endpoint="index")
+def register_blueprints(app):
+    # Since the application instance is now created, register each Blueprint
+    # with the Flask application instance (app)
+    from flask_resume.recipes import recipes_blueprint
+    from flask_resume.users import users_blueprint
 
-    return app
+    app.register_blueprint(recipes_blueprint)
+    app.register_blueprint(users_blueprint)
