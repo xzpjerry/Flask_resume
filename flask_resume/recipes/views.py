@@ -19,4 +19,4 @@ class BasicResumeEditForm(FlaskForm):
     region = StringField('Region', validators=[DataRequired()])
     birth = DateField('Birthdate', format='%Y-%m-%d', validators=[DataRequired()])
     portrait = FileField('Upload Your Avatar', validators=[FileAllowed(AVATARS, 'Image only!'), FileRequired('File was empty!')])
-    submit = SubmitField("Savw")
+    submit = SubmitField("Save")

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title_block %}
+<title>Resume Page</title>
+{% endblock %}
+
+
+{% block body_block %}
+    <h1>Editing Resume for {{ current_user.username }}</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+
+    <form action="{{ url_for('recipes.edit_resume', resume_type = 'basic_info') }}" method="post" name="edit_basic_resume_info" enctype="multipart/form-data">
+        {{ basic_info_form.csrf_token }}
+        <p>
+            {{ basic_info_form.portrait.label }}<br>
+            {% if has_basic_info_form_data %}
+                <p>Currently using: <img class="img-fluid" alt="Responsive image" src="{{ current_user.resume.basic_info.portrait_URL }}"></p>
+            {% endif %}
+            {{ basic_info_form.portrait() }}<br>
+        </p>
+        <p>
+            {{ basic_info_form.name.label }}<br>
+            {{ basic_info_form.name(size=80) }}<br>
+        </p>
+        <p>
+            {{ basic_info_form.nation.label }}<br>
+            {{ basic_info_form.nation() }}<br>
+        </p>
+        <p>
+            {{ basic_info_form.region.label }}<br>
+            {{ basic_info_form.region(size=80) }}<br>
+        </p>
+        <p>
+            {{ basic_info_form.birth.label }}<br>
+            {{ basic_info_form.birth(size=80) }}<br>
+        </p>
+        <p><input class="btn btn-primary" type="submit" value="Save"> <a class="btn btn-danger" href="/resume">Cancel</a></p>
+    </form>
+    
+
+{% endblock %}
