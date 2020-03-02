@@ -6,7 +6,7 @@
 
 
 {% block body_block %}
-    <h1>Resume for {{ current_user.username }} <a class="btn btn-warning" href="/resume/edit">Edit</a></h1>
+    <h1>Resume for {{ current_user.username }}</h1>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -17,7 +17,7 @@
         </ul>
     {% endif %}
     {% endwith %} 
-    <h2>Basic Info</h2>
+    <h2>Basic Info <a class="btn btn-warning" href="/resume/edit/basic_info">Edit</a></h2>
     <p>Portrait: <img class="img-fluid" alt="Responsive image" src="{{ current_user.resume.basic_info.portrait_URL }}"></p>
     <p>Name: {{ current_user.resume.basic_info.name }}</p>
     <p>Nation: {{ current_user.resume.basic_info.nation }}</p>

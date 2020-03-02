@@ -6,7 +6,11 @@
 
 
 {% block body_block %}
+    {% if has_basic_info_form_data %}
     <h1>Editing Resume for {{ current_user.username }}</h1>
+    {% else %}
+    <h1>Ok, {{ current_user.username }}, let's get started with your resume</h1>
+    {% endif %}
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -30,7 +34,7 @@
         </p>
         <p>
             {{ basic_info_form.name.label }}<br>
-            {{ basic_info_form.name(size=80) }}<br>
+            {{ basic_info_form.name() }}<br>
         </p>
         <p>
             {{ basic_info_form.nation.label }}<br>
@@ -38,14 +42,30 @@
         </p>
         <p>
             {{ basic_info_form.region.label }}<br>
-            {{ basic_info_form.region(size=80) }}<br>
+            {{ basic_info_form.region() }}<br>
         </p>
         <p>
             {{ basic_info_form.birth.label }}<br>
-            {{ basic_info_form.birth(size=80) }}<br>
+            {{ basic_info_form.birth() }}<br>
         </p>
         <p><input class="btn btn-primary" type="submit" value="Save"> <a class="btn btn-danger" href="/resume">Cancel</a></p>
     </form>
+    <script>
+        let country_selected = document.getElementById('nation')
+        let region_selected = document.getElementById('region')
+        country_selected.onchange = function(){
+            country_code = country_selected.value
+            fetch('/resume/region/' + country_code).then(function(response){
+                response.json().then(function(data){
+                    let option_html = ''
+                    for(let region of data.regions){
+                        option_html += '<option value="' + region[0] + '">' + region[1] + '</option>'
+                    }
+                    region_selected.innerHTML = option_html;
+                })
+            })
+        }
+    </script>
     
 
 {% endblock %}

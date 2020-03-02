@@ -8,15 +8,11 @@ import pycountry
 
 from flask_resume import AVATARS
 
-class CountrySelectField(SelectField):
-    def __init__(self, *args, **kwargs):
-        super(CountrySelectField, self).__init__(*args, **kwargs)
-        self.choices = [(country.alpha_2, country.name) for country in pycountry.countries]
-
+DEFAULT_COUNTRIES = [(None, '')] + [(country.alpha_2, country.name) for country in sorted(pycountry.countries, key=lambda x: x.name)]
 class BasicResumeEditForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    nation = CountrySelectField('Nation', validators=[DataRequired()])
-    region = StringField('Region', validators=[DataRequired()])
+    nation = SelectField('Nation', validators=[DataRequired()], choices=DEFAULT_COUNTRIES)
+    region = SelectField('Region',validators=[DataRequired()], choices=[(None, '')])
     birth = DateField('Birthdate', format='%Y-%m-%d', validators=[DataRequired()])
-    portrait = FileField('Upload Your Avatar', validators=[FileAllowed(AVATARS, 'Image only!'), FileRequired('File was empty!')])
+    portrait = FileField('Upload Your Avatar', validators=[FileAllowed(AVATARS, 'Image only!'), ])
     submit = SubmitField("Save")

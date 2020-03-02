@@ -25,7 +25,12 @@
           {{ form.password.label }}<br>
           {{ form.password(size=80) }}<br>
       </p>
-      <p>{{ form.remember_me }} {{ form.remember_me.label}}</p>
-      <p>{{ form.submit }}</p>
+      <p>{{ form.remember_me }} {{ form.remember_me.label}}</p>{{ form.submit(hidden='true', id='form-submit') }}   
+      <p><button onclick="press_submit()" type="button" class="btn btn-primary" id="modal-confirm">Log in</button><a class="btn btn-secondary" href="/signup">Sign up</a></p>
   </form>
+  <script>
+      function press_submit(){
+          document.getElementById('form-submit').click()
+      }
+  </script>
 {% endblock %}
